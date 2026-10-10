@@ -114,3 +114,125 @@ html,body{background:var(--bg)}
 #reportBody table{width:100%;border-collapse:collapse;font:.82rem 'JetBrains Mono',monospace}
 #reportBody th,#reportBody td{border:1px solid var(--border);padding:.4rem .6rem;text-align:left;white-space:nowrap}
 #reportBody th{background:var(--panel2);color:var(--text)}
+
+/* =====================================================================
+   PASTE AT THE END OF styles.css
+   Part 1: class names App.tsx / BodyEditor.tsx use that the stylesheet
+           doesn't define yet (stage wrapper, light theme, dots, ...)
+   Part 2: the tutorial
+===================================================================== */
+
+/* ---------- Part 1: compatibility with the React components ---------- */
+
+/* App.tsx renders <section className="stage">; the stylesheet only knew #stage */
+.app { position: relative; color: var(--text); }
+.stage { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* App.tsx toggles className "app light"; the stylesheet only knew [data-theme="light"] */
+.app.light {
+  --bg: #eef1f8; --glass: rgba(255,255,255,.78); --border: rgba(20,30,60,.14);
+  --panel2: rgba(20,30,60,.05); --text: #161a2c; --muted: #5b6178;
+  --accent: #c9772e; --hover: rgba(20,30,60,.07);
+  background: var(--bg);
+}
+
+/* the panel headers are <button>s in the React version */
+button.fhead {
+  width: 100%; background: none; border: 0; border-bottom: 1px solid var(--border);
+  border-radius: 0; text-align: left; font-family: inherit;
+}
+
+/* coloured dots on the add buttons */
+.body-color { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.star-color   { background: #e8a33d; }
+.planet-color { background: #5ec98f; }
+.moon-color   { background: #c9c9d4; }
+.other-color  { background: #9b7bff; }
+
+/* BodyEditor */
+.body-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.body-type { font: .7rem 'JetBrains Mono', Consolas, Menlo, monospace; color: var(--muted); }
+.remove-body {
+  margin-left: auto; background: none; border: 1px solid var(--border);
+  border-radius: 4px; padding: .1rem .5rem; font-size: .75rem; cursor: pointer; color: var(--muted);
+}
+
+/* "Labels" button inside the right panel */
+.labels-inline {
+  margin: 0 0 .8rem; padding: .4rem .8rem; background: var(--panel2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 999px;
+  font: 500 .75rem 'JetBrains Mono', Consolas, Menlo, monospace; cursor: pointer;
+}
+.labels-inline.off { opacity: .4; background: transparent; }
+
+/* ---------- Part 2: tutorial ---------- */
+
+.tour-block {
+  position: fixed;
+  inset: 0;
+  z-index: 99997;
+}
+
+/* the spotlight: a transparent box whose huge shadow dims everything else */
+.tour-hole {
+  position: fixed;
+  z-index: 99998;
+  border-radius: 12px;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 9999px rgba(3, 6, 15, 0.72),
+    0 0 0 2px var(--accent, #f2c14e),
+    0 0 18px 4px rgba(242, 193, 78, 0.45);
+  transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
+}
+
+.tour-card {
+  position: fixed;
+  z-index: 99999;
+  width: min(330px, calc(100vw - 24px));
+  padding: 16px 16px 14px;
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  border-radius: 16px;
+  background: var(--glass, rgba(13,15,27,.94));
+  color: var(--text, #e7e6f0);
+  font-size: .9rem;
+  line-height: 1.5;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  transition: top .3s ease, left .3s ease;
+}
+.tour-card h3 { margin: 0 26px 6px 0; font-size: 1rem; font-weight: 600; color: var(--accent, #f2c14e); }
+.tour-card p  { margin: 0 0 14px; color: var(--muted, #9ea2bd); }
+
+.tour-card .tour-x {
+  position: absolute; top: 8px; right: 10px; padding: 2px 6px;
+  background: none; border: 0; color: var(--muted, #9ea2bd);
+  font-size: 22px; line-height: 1; cursor: pointer;
+}
+.tour-card .tour-x:hover { color: var(--text, #fff); }
+
+.tour-foot  { display: flex; align-items: center; gap: 8px; }
+.tour-count { margin-right: auto; font-size: .75rem; color: var(--muted, #9ea2bd); }
+
+.tour-card .tour-btn {
+  padding: 7px 14px; border: 1px solid var(--border, rgba(255,255,255,.12));
+  border-radius: 999px; font: inherit; font-size: .8rem; font-weight: 500; cursor: pointer;
+}
+.tour-card .tour-skip { border-color: transparent; background: transparent; color: var(--muted, #9ea2bd); }
+.tour-card .tour-skip:hover { color: var(--text, #fff); }
+.tour-card .tour-back { background: var(--panel2, rgba(255,255,255,.06)); color: var(--text, #e7e6f0); }
+.tour-card .tour-back:hover { background: var(--hover, rgba(255,255,255,.12)); }
+.tour-card .tour-next { border-color: var(--accent, #f2c14e); background: var(--accent, #f2c14e); color: #1a1400; font-weight: 700; }
+
+/* "?" button that replays the tutorial, left of the theme toggle */
+button.help-btn {
+  position: absolute; top: 16px; right: 66px; z-index: 15;
+  width: 40px; height: 40px; padding: 0; border-radius: 50%;
+  background: var(--glass); border: 1px solid var(--border); color: var(--text);
+  font: 700 1rem 'JetBrains Mono', Consolas, Menlo, monospace; cursor: pointer;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+button.help-btn:hover { background: var(--hover); }

@@ -7,6 +7,7 @@ import { EnvironmentPanel } from './components/EnvironmentPanel/EnvironmentPanel
 import { PhysicsPanel } from './components/PhysicsPanel/PhysicsPanel';
 import { SimulationControls } from './components/SimulationControls/SimulationControls';
 import { Report } from './components/Report/Report';
+import { Tutorial, useTutorial } from './components/Tutorial/Tutorial';
 import {
   addMoonBody, addOtherBody, addPlanetBody, addStarBody, editBody, getStatsSnapshot,
   getView, initSimulationState, removeBodyAt, resetSimulation, setControls, setRunning,
@@ -15,6 +16,7 @@ import {
 import { useEffect, useRef } from 'react';
 
 export default function App(){
+  const tutorial=useTutorial();
   const initialized=useRef(false);
   if(!initialized.current){ initSimulationState(); initialized.current=true; }
   const [light,setLight]=useState(false);
@@ -40,11 +42,13 @@ export default function App(){
     <div id="stage">
       <SimulationCanvas speed={speed} paused={!running} onFrame={refresh}/>
       <Header light={light} onTheme={()=>{const next=!light;setLight(next);setTheme(next);document.documentElement.dataset.theme=next?'light':'dark';}}/>
+      <button className="help-btn" title="Replay the tutorial" onClick={tutorial.start}>?</button>
       <AddDock onStar={()=>add(addStarBody)} onPlanet={()=>add(addPlanetBody)} onMoon={()=>add(addMoonBody)} onBody={()=>add(addOtherBody)}/>
       <EnvironmentPanel bodies={snapshot.bodies} env={snapshot.env}/>
       <PhysicsPanel controls={controls} onControlsChange={changeControl} view={view} onViewChange={changeView} bodies={snapshot.bodies} onEdit={(i:string,k:string,v:number)=>{editBody(+i,k,v);refresh();}} onRemove={(i:number)=>{removeBodyAt(i);refresh();}}/>
       <SimulationControls running={running} speed={speed} time={snapshot.time} count={snapshot.bodies.length} labels={labels} onToggle={toggle} onStep={()=>{stepSimulation();refresh();}} onReset={reset} onLabels={toggleLabels} onSpeed={setSpeed} onReport={report} reportReady={snapshot.reportReady} remaining={snapshot.reportRemainingMs}/>
     </div>
     <Report open={reportOpen}/>
+    <Tutorial open={tutorial.open} onClose={tutorial.close}/>
   </>;
 }
